@@ -1,0 +1,20 @@
+{
+  "name": "msdf-bmfont-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "author": "Don McCurdy <dm@donmccurdy.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.2",
+    "fs-extra": "^5.0.0",
+    "msdf-bmfont-xml": "^2.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.11"
+  }
+}

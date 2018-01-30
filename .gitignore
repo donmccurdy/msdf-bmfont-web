@@ -1,0 +1,5 @@
+data/tasks/*
+!data/tasks/.gitkeep
+fonts/*
+!fonts/.gitkeep
+node_modules
