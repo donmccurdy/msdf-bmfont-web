@@ -60,6 +60,8 @@ function generateAll (fontID, charset) {
         code === 0 ? resolve() : reject(`Failed with code ${code}.`);
       });
     }))
+    .then(() => fs.remove(`${taskDir}/yahei.ttf`))
+    .then(() => fs.remove(`${taskDir}/charset.txt`))
     .then(() => new Promise((resolve, reject) => {
       fs.readJson(`${taskDir}/yahei.json`, (err, json) => {
         if (err) reject(err);
