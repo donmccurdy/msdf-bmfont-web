@@ -61,7 +61,12 @@
     </section>
     <section>
       <h2>5. Example usage</h2>
-      <p>TODO(donmccurdy): example usage</p>
+      <p>To use the generated MSDF font in <a href="https://aframe.io/">A-Frame</a>:</p>
+      <pre><code>&lt;a-text text="{{sampleText}}"
+        font="{{fontFileName}}"
+        color="#33C3F0"
+        negate="true"&gt;
+&lt;/a-text&gt;</code></pre>
     </section>
 
     <overlay-spinner v-bind:class="{ active: pending }"></overlay-spinner>
