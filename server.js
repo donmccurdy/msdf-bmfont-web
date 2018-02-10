@@ -1,55 +1,68 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const multer = require('multer');
 const assert = require('assert');
 const {spawn} = require('child_process');
 const fs = require('fs-extra');
 const {StringDecoder} = require('string_decoder');
 
-const app = express();
-
 const PORT = process.env.PORT || 3000;
+const DEFAULT_FONT = 'yahei';
+
+// ---------------------------------------- //
+
+let nextTaskID = 1;
+
+function allocateDir (req) {
+  if (req.taskDir) return Promise.resolve();
+  req.taskID = nextTaskID++;
+  req.taskDir = `data/tasks/task-${req.taskID}`;
+  return fs.emptyDir(req.taskDir);
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    allocateDir(req).then(() => cb(null, req.taskDir));
+  },
+  filename: (req, file, cb) => {
+    const fontID = String(req.params.fontID).replace(/[^a-zA-Z0-9-]/g, '');
+    cb(null, `${fontID}.ttf`);
+  }
+});
+const upload = multer({
+  storage: storage,
+  limits: {fileSize: 50000000}
+});
+
+// ---------------------------------------- //
+
+const app = express();
 
 app.use(express.static('public'));
 app.use(express.static('data'));
 
-app.use(bodyParser.text());
-
-app.post('/_/font/:fontID/charset/', (req, res) => {
+app.post('/_/font/:fontID/', upload.single('fontFile'), (req, res) => {
   const fontID = String(req.params.fontID).replace(/[^a-zA-Z0-9-]/g, '');
-  const charset = String(req.body);
+  const charset = String(req.body.charset);
 
-  assert(fontID === 'yahei', 'Unexpected font: ' + fontID);
+  if (!fontID || !charset) {
+    res.status(400).send('<!DOCTYPE html>Missing or invalid font ID or charset.');
+    return;
+  }
 
-  generateAll(fontID, charset)
-    .then((result) => {
-      console.log(result);
-      res.send({
-        ok: true,
-        json: result.json,
-        path: result.path
-      });
+  let taskID;
+  let taskDir;
+
+  return allocateDir(req)
+    .then(() => {
+      taskID = req.taskID;
+      taskDir = req.taskDir;
+      if (!req.file) {
+        console.log('copying file');
+        return fs.copy(`fonts/${DEFAULT_FONT}.ttf`, `${taskDir}/${fontID}.ttf`);
+      } else {
+        console.log('found file: ' + req.file);
+      }
     })
-    .catch((e) => console.error(e));
-});
-
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-
-// ---------------------------------------- //
-
-let nextTaskID = 0;
-
-/**
- * @param  {string} fontID
- * @param  {string} charset
- * @return {Promise<Object>}
- */
-function generateAll (fontID, charset) {
-
-  const taskID = nextTaskID++;
-  const taskDir = `data/tasks/task-${taskID}`;
-
-  return fs.emptyDir(taskDir)
-    .then(() => fs.copy(`fonts/${fontID}.ttf`, `${taskDir}/${fontID}.ttf`))
     .then(() => fs.writeFile(`${taskDir}/charset.txt`, charset))
     .then(() => new Promise((resolve, reject) => {
       // run msdf-bmfont on the task files
@@ -78,5 +91,20 @@ function generateAll (fontID, charset) {
         if (err) reject(err);
         resolve({path: taskDir.replace('data/', ''), json: json});
       });
-    }));
-}
+    }))
+    .then((result) => {
+      res.send({
+        ok: true,
+        json: result.json,
+        path: result.path
+      });
+    }).catch((e) => {
+      console.error(e);
+      res.status(500).send({error: 'Sorry, something went wrong.'});
+    });
+
+});
+
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+// ---------------------------------------- //

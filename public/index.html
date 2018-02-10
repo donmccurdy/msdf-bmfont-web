@@ -25,16 +25,17 @@
   <main>
     <section>
       <h2>1. Select font</h2>
-      <select data-bind="font">
-        <option value="yahei">Microsoft YaHei</option>
-      </select>
+      <p>Default font is Microsoft YaHei, which supports several languages. Optionally, upload another (.ttf) font:</p>
+      <label>Upload a font: <input type="file" data-bind="font-file"></label>
+      <button data-action="font-reset">reset</button>
     </section>
     <section>
       <h2>2. Select character set</h2>
-      <textarea data-bind="charset">helloworld</textarea>
+      <textarea data-bind="charset" required>helloworld</textarea>
     </section>
     <section>
       <h2>3. Create bmfont</h2>
+      <input type="text" data-bind="font-name" placeholder="name_for_font">
       <button data-action="create">Create</button>
       <div data-bind="output"></div>
     </section>
