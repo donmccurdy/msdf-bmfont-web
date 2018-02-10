@@ -1,6 +1,6 @@
 {
   "name": "msdf-bmfont-web",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Web tool for creation of MSDF bitmap font spritesheets and JSON",
   "main": "index.js",
   "scripts": {
@@ -27,6 +27,10 @@
     "nodemon": "^1.14.11"
   },
   "nodemonConfig": {
-    "ignore": ["data/*", "fonts/*", "public/*"]
+    "ignore": [
+      "data/*",
+      "fonts/*",
+      "public/*"
+    ]
   }
 }
