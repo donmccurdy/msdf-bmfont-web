@@ -16,5 +16,8 @@
   },
   "devDependencies": {
     "nodemon": "^1.14.11"
+  },
+  "nodemonConfig": {
+    "ignore": ["data/*", "fonts/*", "public/*"]
   }
 }
