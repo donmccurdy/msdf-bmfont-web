@@ -1,3 +1,5 @@
+/* global JSZip, saveAs */
+
 class App {
 
   constructor (el) {
@@ -10,6 +12,7 @@ class App {
     };
 
     this.json = null;
+    this.path = null;
 
     this.dom.createBtnEl.addEventListener('click', () => this._create());
     this.dom.downloadBtnEl.addEventListener('click', () => this._download());
@@ -27,10 +30,13 @@ class App {
     const fontID = this._getFontID();
     const charset = this._getCharset();
 
+    this.dom.outputEl.innerHTML = '';
+
     fetch(`/_/font/${fontID}/charset/`, {method: 'post', body: charset})
       .then((response) => response.json())
       .then((result) => {
         this.json = result.json;
+        this.path = result.path;
         result.json.pages.forEach((page) => {
           const imgEl = document.createElement('img');
           imgEl.classList.add('img-sprite');
@@ -42,9 +48,33 @@ class App {
   }
 
   _download () {
-    if (!this.json) return;
+    const fontID = this._getFontID();
+    const json = this.json;
+    const path = this.path;
 
+    if (!json || !fontID || !path) {
+      window.alert('Create bmfont before downloading files.');
+      return;
+    }
 
+    const zip = new JSZip();
+    zip.file(`${fontID}.json`, JSON.stringify(this.json));
+
+    const pendingImages = json.pages.map((page) => {
+      return fetch(`${path}/${page}`)
+        .then((response) => response.arrayBuffer())
+        .then((buffer) => {
+          zip.file(page, buffer);
+        });
+    });
+
+    Promise.all(pendingImages).then(() => {
+      zip
+        .generateAsync({type:'blob'})
+        .then(function(content) {
+            saveAs(content, `${fontID}.zip`);
+        });
+    });
   }
 
 }
