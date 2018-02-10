@@ -4,11 +4,15 @@ class App {
     this.dom = {
       fontEl: el.querySelector('[data-bind=font]'),
       charsetEl: el.querySelector('[data-bind=charset]'),
+      createBtnEl: el.querySelector('[data-action=create]'),
       downloadBtnEl: el.querySelector('[data-action=download]'),
       outputEl: el.querySelector('[data-bind=output]'),
     };
 
-    this.dom.downloadBtnEl.addEventListener('click', () => this._onDownload());
+    this.json = null;
+
+    this.dom.createBtnEl.addEventListener('click', () => this._create());
+    this.dom.downloadBtnEl.addEventListener('click', () => this._download());
   }
 
   _getFontID () {
@@ -19,23 +23,28 @@ class App {
     return this.dom.charsetEl.value;
   }
 
-  _onDownload () {
+  _create () {
     const fontID = this._getFontID();
     const charset = this._getCharset();
 
     fetch(`/_/font/${fontID}/charset/`, {method: 'post', body: charset})
       .then((response) => response.json())
       .then((result) => {
-        const jsonEl = document.createElement('pre');
-        jsonEl.textContent = JSON.stringify(result.json, null, 2);
-        this.dom.outputEl.appendChild(jsonEl);
+        this.json = result.json;
         result.json.pages.forEach((page) => {
           const imgEl = document.createElement('img');
+          imgEl.classList.add('img-sprite');
           imgEl.src = `${result.path}/${page}`;
           this.dom.outputEl.appendChild(imgEl);
         });
         console.log(result);
       });
+  }
+
+  _download () {
+    if (!this.json) return;
+
+
   }
 
 }
