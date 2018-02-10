@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const assert = require('assert');
 const {spawn} = require('child_process');
 const fs = require('fs-extra');
+const {StringDecoder} = require('string_decoder');
 
 const app = express();
 
@@ -27,10 +28,11 @@ app.post('/_/font/:fontID/charset/', (req, res) => {
         json: result.json,
         path: result.path
       });
-    });
+    })
+    .catch((e) => console.error(e));
 });
 
-app.listen(PORT, () => console.log('Listening on port 3000'));
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 // ---------------------------------------- //
 
@@ -50,12 +52,20 @@ function generateAll (fontID, charset) {
     .then(() => fs.copy('fonts/yahei.ttf', `${taskDir}/yahei.ttf`))
     .then(() => fs.writeFile(`${taskDir}/charset.txt`, charset))
     .then(() => new Promise((resolve, reject) => {
+      // run msdf-bmfont on the task files
       const gen = spawn('msdf-bmfont', [
         '-f', 'json',
         '-i', `${taskDir}/charset.txt`,
         `${taskDir}/yahei.ttf`,
         '--pot'
       ]);
+
+      // propagate logs
+      const decoder = new StringDecoder('utf8');
+      gen.stdout.on('data', (data) => console.log(decoder.write(data)));
+      gen.stderr.on('data', (data) => console.warn(decoder.write(data)));
+
+      // resolve on completion
       gen.on('close', (code) => {
         code === 0 ? resolve() : reject(`Failed with code ${code}.`);
       });
