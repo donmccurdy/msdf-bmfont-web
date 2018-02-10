@@ -1,6 +1,6 @@
 {
   "name": "msdf-bmfont-web",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Web tool for creation of MSDF bitmap font spritesheets and JSON",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,8 @@
     "docker:push": "gcloud --project=$npm_package_name docker -- push gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version",
     "docker:allocate": "gcloud --project=$npm_package_name container clusters create $npm_package_name-cluster --num-nodes=1 --machine-type=g1-small",
     "docker:deploy": "kubectl run $npm_package_name --image=gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version --port 3000",
-    "docker:expose": "kubectl expose deployment $npm_package_name --type=LoadBalancer --port 80 --target-port 3000"
+    "docker:expose": "kubectl expose deployment $npm_package_name --type=LoadBalancer --port 80 --target-port 3000 --external-ip 35.202.253.222",
+    "docker:update": "kubectl set image deployment/$npm_package_name $npm_package_name=gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version"
   },
   "author": "Don McCurdy <dm@donmccurdy.com>",
   "license": "MIT",

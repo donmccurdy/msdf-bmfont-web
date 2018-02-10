@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: msdf-bmfont-web
+spec:
+  ports:
+  - port: 80
+    targetPort: 3000
+  type: LoadBalancer
+  loadBalancerIP: "35.202.253.222"
