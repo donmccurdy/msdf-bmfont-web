@@ -7,6 +7,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "clean": "rm -rf data/tasks/task-*",
+    "deploy": "npm version patch && npm run docker:build && npm run docker:push && npm run docker:update",
     "docker:build": "docker build -t gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version .",
     "docker:run": "docker run --rm -p 3000:3000 gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version",
     "docker:push": "gcloud --project=$npm_package_name docker -- push gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version",
