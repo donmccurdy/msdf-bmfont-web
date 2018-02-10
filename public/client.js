@@ -58,7 +58,7 @@ class App {
     }
 
     const zip = new JSZip();
-    zip.file(`${fontID}.json`, JSON.stringify(this.json));
+    zip.file(`${fontID}-msdf.json`, JSON.stringify(this.json));
 
     const pendingImages = json.pages.map((page) => {
       return fetch(`${path}/${page}`)
@@ -72,7 +72,7 @@ class App {
       zip
         .generateAsync({type:'blob'})
         .then(function(content) {
-            saveAs(content, `${fontID}.zip`);
+            saveAs(content, `${fontID}-msdf.zip`);
         });
     });
   }

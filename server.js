@@ -49,14 +49,14 @@ function generateAll (fontID, charset) {
   const taskDir = `data/tasks/task-${taskID}`;
 
   return fs.emptyDir(taskDir)
-    .then(() => fs.copy('fonts/yahei.ttf', `${taskDir}/yahei.ttf`))
+    .then(() => fs.copy(`fonts/${fontID}.ttf`, `${taskDir}/${fontID}.ttf`))
     .then(() => fs.writeFile(`${taskDir}/charset.txt`, charset))
     .then(() => new Promise((resolve, reject) => {
       // run msdf-bmfont on the task files
       const gen = spawn('msdf-bmfont', [
         '-f', 'json',
         '-i', `${taskDir}/charset.txt`,
-        `${taskDir}/yahei.ttf`,
+        `${taskDir}/${fontID}.ttf`,
         '--pot'
       ]);
 
@@ -70,10 +70,11 @@ function generateAll (fontID, charset) {
         code === 0 ? resolve() : reject(`Failed with code ${code}.`);
       });
     }))
-    .then(() => fs.remove(`${taskDir}/yahei.ttf`))
+    .then(() => fs.remove(`${taskDir}/${fontID}.ttf`))
     .then(() => fs.remove(`${taskDir}/charset.txt`))
+    .then(() => fs.move(`${taskDir}/${fontID}.json`, `${taskDir}/${fontID}-msdf.json`))
     .then(() => new Promise((resolve, reject) => {
-      fs.readJson(`${taskDir}/yahei.json`, (err, json) => {
+      fs.readJson(`${taskDir}/${fontID}-msdf.json`, (err, json) => {
         if (err) reject(err);
         resolve({path: taskDir.replace('data/', ''), json: json});
       });
