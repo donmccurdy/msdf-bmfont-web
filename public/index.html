@@ -1,53 +1,77 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>msdf-bmfont-web</title>
+  <title>MSDF font generator</title>
+  <meta name="author" content="Don McCurdy">
   <meta name="description" content="Web tool for creation of MSDF bitmap font spritesheets and JSON">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="style.css">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="assets/normalize.css">
+  <link rel="stylesheet" href="assets/skeleton.css">
+  <link rel="stylesheet" href="assets/client.css">
 </head>
 <body>
-
-  <header>
-    <h1>msdf-bmfont-web</h1>
+  <header class="container">
+    <h1>MSDF font generator</h1>
     <nav>
-      <ul>
-        <li><a href="https://github.com/donmccurdy/msdf-bmfont-web">Source</a>
-        <li><a href="https://github.com/donmccurdy/msdf-bmfont-web/issues">Issues</a>
-      </li>
+      <a href="https://github.com/donmccurdy/msdf-bmfont-web">Source</a>
+      <a href="https://github.com/donmccurdy/msdf-bmfont-web/issues">Issues</a>
     </nav>
   </header>
-  <main>
+  <main id="app" class="container">
     <section>
       <h2>1. Select font</h2>
       <p>Default font is Microsoft YaHei, which supports several languages. Optionally, upload another (.ttf) font:</p>
-      <label>Upload a font: <input type="file" data-bind="font-file"></label>
-      <button data-action="font-reset">reset</button>
+      <label>
+        Upload a font:
+        <input type="file"
+               accept=".ttf"
+               ref="fontFileInput"
+               v-on:change="onFileChange($event)">
+      </label>
+      <button v-on:click="resetFile" class="button">reset</button>
     </section>
     <section>
       <h2>2. Select character set</h2>
-      <textarea data-bind="charset" required>helloworld</textarea>
+      <textarea class="u-full-width" v-model="charset" required>helloworld</textarea>
     </section>
     <section>
       <h2>3. Create bmfont</h2>
-      <input type="text" data-bind="font-name" placeholder="name_for_font">
-      <button data-action="create">Create</button>
-      <div data-bind="output"></div>
+      <input type="text"
+             v-model="fontName"
+             v-on:input="sanitizeFileName"
+             v-on:change="onFileNameChange"
+             placeholder="name_for_font">
+      <button v-on:click="create" class="button button-primary">Create MSDF</button>
+      <p>The generated file will be named <code>{{ fontFileName }}</code>.</p>
     </section>
     <section>
-      <h2>4. Download files</h2>
-      <button data-action="download">Download</button>
+      <h2>4. Preview and download files</h2>
+      <button v-on:click="download"
+              v-bind:disabled="!json"
+              class="button button-primary">Download</button>
+      <font-preview v-if="json" :json="json" :path="path" :sample-text="sampleText"></font-preview>
+      <p><i>Preview shows only first five characters of charset.</i></p>
     </section>
-  </main>
-  <footer></footer>
+    <section>
+      <h2>5. Example usage</h2>
+      <p>TODO(donmccurdy): example usage</p>
+    </section>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.3/FileSaver.min.js"></script>
-  <script src="client.js"></script>
+    <overlay-spinner v-bind:class="{ active: pending }"></overlay-spinner>
+  </main>
+  <footer class="container">
+    By <a href="https://twitter.com/donrmccurdy/">Don McCurdy</a>.
+    MIT license, 2018.
+    Preview background by <a href="https://www.toptal.com/designers/subtlepatterns">Subtle Patterns</a>.
+  </footer>
+
+  <script src="bundle.js"></script>
 </body>
 </html>
