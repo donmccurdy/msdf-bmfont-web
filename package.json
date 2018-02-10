@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "clean": "rm -rf data/tasks/task-*",
+    "docker:build": "docker build -t gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version .",
+    "docker:run": "docker run --rm -p 3000:3000 gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version"
   },
   "author": "Don McCurdy <dm@donmccurdy.com>",
   "license": "MIT",
