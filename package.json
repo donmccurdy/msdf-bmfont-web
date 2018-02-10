@@ -8,7 +8,11 @@
     "dev": "nodemon server.js",
     "clean": "rm -rf data/tasks/task-*",
     "docker:build": "docker build -t gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version .",
-    "docker:run": "docker run --rm -p 3000:3000 gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version"
+    "docker:run": "docker run --rm -p 3000:3000 gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version",
+    "docker:push": "gcloud --project=$npm_package_name docker -- push gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version",
+    "docker:allocate": "gcloud --project=$npm_package_name container clusters create $npm_package_name-cluster --num-nodes=1 --machine-type=g1-small",
+    "docker:deploy": "kubectl run $npm_package_name --image=gcr.io/$npm_package_name/$npm_package_name:v$npm_package_version --port 3000",
+    "docker:expose": "kubectl expose deployment $npm_package_name --type=LoadBalancer --port 80 --target-port 3000"
   },
   "author": "Don McCurdy <dm@donmccurdy.com>",
   "license": "MIT",
