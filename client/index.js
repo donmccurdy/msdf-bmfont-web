@@ -14,7 +14,7 @@ new Vue({
 
   data: {
     charset: '你好，世界',
-    fontName: 'my_custom_font',
+    fontName: 'custom',
     fontFile: null,
     json: null,
     path: null,
