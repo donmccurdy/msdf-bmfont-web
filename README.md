@@ -1,6 +1,6 @@
 # msdf-bmfont-web
 
-Web tool for creation of MSDF bitmap font spritesheets and JSON.
+Web tool for creation of MSDF bitmap font spritesheets and JSON, using [msdf-bmfont-xml](https://github.com/soimy/msdf-bmfont-xml).
 
 ## Overview
 
