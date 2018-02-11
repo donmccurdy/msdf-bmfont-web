@@ -8,7 +8,7 @@
     "build": "browserify -g envify client/index.js -o public/bundle.js",
     "dev": "concurrently \"nodemon server.js\" \"watchify client/index.js -o public/bundle.js\"",
     "clean": "rm -rf data/tasks/task-*",
-    "deploy": "now && now alias"
+    "deploy": "now --docker && now alias"
   },
   "author": "Don McCurdy <dm@donmccurdy.com>",
   "license": "MIT",
