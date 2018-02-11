@@ -52,7 +52,8 @@ new Vue({
           this.path = result.path;
           console.log(result);
         })
-        .finally(() => {
+        .catch((e) => console.error(e))
+        .then(() => {
           this.pending = false;
         });
     },
