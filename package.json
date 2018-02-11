@@ -1,6 +1,6 @@
 {
   "name": "msdf-bmfont-web",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Web tool for creation of MSDF bitmap font spritesheets and JSON",
   "main": "index.js",
   "scripts": {
