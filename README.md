@@ -36,10 +36,3 @@ MSDF fonts may be generated with [Hiero](https://github.com/libgdx/libgdx/wiki/H
 npm install
 npm run dev
 ```
-
-## Deployment
-
-See [Kubernetes documentation](https://cloud.google.com/kubernetes-engine/docs/tutorials/hello-app).
-
-
-

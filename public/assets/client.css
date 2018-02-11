@@ -47,6 +47,12 @@ h2 {
   display: block;
 }
 
+.font-preview canvas {
+  border-radius: 4px;
+  border: 1px solid #e1e1e1;
+  box-sizing: border-box;
+}
+
 /****************************
  Spinner */
 
