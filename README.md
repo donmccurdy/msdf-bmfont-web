@@ -26,6 +26,10 @@ This tool uses a newer version of `msdfgen`, and to use them with A-Frame it is 
 
 MSDF fonts may be generated with [Hiero](https://github.com/libgdx/libgdx/wiki/Hiero). [See this guide for generating SDF fonts](https://github.com/libgdx/libgdx/wiki/Distance-field-fonts).
 
+## Screenshot
+
+![screenshot](https://user-images.githubusercontent.com/1848368/36068226-18e1c3ec-0e85-11e8-81a6-b83cde3dcdd1.png)
+
 ## Local development
 
 ```
