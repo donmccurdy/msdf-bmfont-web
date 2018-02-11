@@ -19,6 +19,7 @@
   },
   "author": "Don McCurdy <dm@donmccurdy.com>",
   "license": "MIT",
+  "repository": "donmccurdy/msdf-bmfont-web",
   "dependencies": {
     "browserify": "^16.0.0",
     "envify": "^4.1.0",
@@ -42,7 +43,8 @@
     "ignore": [
       "data/*",
       "fonts/*",
-      "public/*"
+      "public/*",
+      "client/*"
     ]
   }
 }

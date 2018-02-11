@@ -47,7 +47,7 @@ module.exports = {
 
     const renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true});
     renderer.setClearColor(0xffffff);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(2 /* whatever */);
 
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.autoRotate = true;
