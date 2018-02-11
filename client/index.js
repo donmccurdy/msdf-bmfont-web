@@ -105,6 +105,7 @@ new Vue({
         return;
       }
       this.fontName = this.fontFile.name.replace('.ttf', '');
+      this.onFileNameChange();
     },
 
     onFileNameChange: function () {

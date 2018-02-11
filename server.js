@@ -57,10 +57,7 @@ app.post('/_/font/:fontID/', upload.single('fontFile'), (req, res) => {
       taskID = req.taskID;
       taskDir = req.taskDir;
       if (!req.file) {
-        console.log('copying file');
         return fs.copy(`fonts/${DEFAULT_FONT}.ttf`, `${taskDir}/${fontID}.ttf`);
-      } else {
-        console.log('found file: ' + req.file);
       }
     })
     .then(() => fs.writeFile(`${taskDir}/charset.txt`, charset))
