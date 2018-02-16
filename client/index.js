@@ -13,7 +13,7 @@ new Vue({
   },
 
   data: {
-    charset: '你好，世界',
+    charset: '你好世界',
     fontName: 'custom',
     fontFile: null,
     json: null,
@@ -48,11 +48,15 @@ new Vue({
       fetch(`/_/font/${fontName}/`, {method: 'post', body: body})
         .then((response) => response.json())
         .then((result) => {
+          if (result.error) throw result.error;
           this.json = result.json;
           this.path = result.path;
           console.log(result);
         })
-        .catch((e) => console.error(e))
+        .catch((e) => {
+          console.error(e);
+          window.alert(e);
+        })
         .then(() => {
           this.pending = false;
         });
