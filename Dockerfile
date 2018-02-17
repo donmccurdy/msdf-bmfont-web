@@ -7,8 +7,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install --only=production
 
-RUN chmod a+x node_modules/msdf-bmfont-xml/bin/linux/msdfgen.linux
-
 # Bundle source
 COPY . .
 
