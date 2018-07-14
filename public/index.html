@@ -48,6 +48,12 @@
              v-on:input="sanitizeFileName"
              v-on:change="onFileNameChange"
              placeholder="name_for_font">
+      <select v-model="textureSize">
+        <option value="128">128px</option>
+        <option value="256">256px (default)</option>
+        <option value="512">512px</option>
+        <option value="1024">1024px</option>
+      </select>
       <button v-on:click="create" class="button button-primary">Create MSDF</button>
       <p>The generated file will be named <code>{{ fontFileName }}</code>.</p>
     </section>

@@ -43,6 +43,7 @@ app.use(express.static('data'));
 app.post('/_/font/:fontID/', upload.single('fontFile'), (req, res) => {
   const fontID = String(req.params.fontID).replace(/[^a-zA-Z0-9-]/g, '');
   const charset = String(req.body.charset);
+  const textureSize = Number(req.body.textureSize);
 
   if (!fontID || !charset) {
     res.status(400).send('<!DOCTYPE html>Missing or invalid font ID or charset.');
@@ -67,7 +68,8 @@ app.post('/_/font/:fontID/', upload.single('fontFile'), (req, res) => {
         '-f', 'json',
         '-i', `${taskDir}/charset.txt`,
         `${taskDir}/${fontID}.ttf`,
-        '--pot'
+        '--pot',
+        '-m', `${textureSize},${textureSize}`
       ]);
 
       // propagate logs

@@ -85,7 +85,9 @@ module.exports = {
       const texture = textureLoader.load(path + '/' + json.pages[0]);
 
       if (json.pages.length > 1) {
-        console.warn('[font-preview] Preview does not yet support multiple textures.');
+        const msg = '[font-preview] Preview does not yet support multiple textures. Try reducing the charset or increasing texture size.';
+        console.warn(msg);
+        alert(msg);
       }
 
       texture.minFilter = THREE.LinearMipMapLinearFilter;

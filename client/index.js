@@ -18,7 +18,8 @@ new Vue({
     fontFile: null,
     json: null,
     path: null,
-    pending: false
+    pending: false,
+    textureSize: 256
   },
 
   computed: {
@@ -38,10 +39,12 @@ new Vue({
       const fontName = this.fontName;
       const fontFile = this.fontFile;
       const charset = this.charset;
+      const textureSize = this.textureSize;
 
       const body = new FormData();
       body.append('charset', charset);
       body.append('fontFile', fontFile);
+      body.append('textureSize', textureSize);
 
       this.pending = true;
 
