@@ -10,14 +10,6 @@ const APP_DIR = __dirname + '/..';
 const DEFAULT_FONT = 'yahei';
 const DEFAULT_FONT_PATH = `${APP_DIR}/fonts/${DEFAULT_FONT}.ttf`;
 
-/**
- * TODO(donmccurdy): Can't write to disk in Now v2. So...
- *
- * To do:
- * - [ ] Patch msdf-bmfont-xml to support 'opentype.parse(buffer)'.
- * - [ ] Restore support for custom TTF fonts.
- */
-
 module.exports = async (req, res) => {
   const form = await parseFormBody(req);
   const fontFile = null;
