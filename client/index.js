@@ -42,13 +42,14 @@ new Vue({
       const textureSize = this.textureSize;
 
       const body = new FormData();
+      body.append('name', fontName);
       body.append('charset', charset);
       body.append('fontFile', fontFile);
       body.append('textureSize', textureSize);
 
       this.pending = true;
 
-      fetch(`/_/font/${fontName}/`, {method: 'post', body: body})
+      fetch(`/api/create/`, {method: 'post', body: body})
         .then((response) => response.json())
         .then((result) => {
           if (result.error) throw result.error;
