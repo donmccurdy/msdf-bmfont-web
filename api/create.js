@@ -14,13 +14,13 @@ const DEFAULT_FONT_PATH = `${APP_DIR}/fonts/${DEFAULT_FONT}.ttf`;
  * TODO(donmccurdy): Can't write to disk in Now v2. So...
  *
  * To do:
- * - [ ] Return Data URIs from serverless function.
- * - [ ] Restore support for custom TTF fonts.
  * - [ ] Patch msdf-bmfont-xml to support 'opentype.parse(buffer)'.
+ * - [ ] Restore support for custom TTF fonts.
  */
 
 module.exports = async (req, res) => {
   const form = await parseFormBody(req);
+  const fontFile = null;
   const fontID = String(form.fields.name).replace(/[^a-zA-Z0-9-]/g, '');
   const charset = String(form.fields.charset);
   const textureSize = Number(form.fields.textureSize);
@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const result = await create(fontID, null /* fontFile */, charset, textureSize);
+    const result = await create(fontID, fontFile, charset, textureSize);
     res.send({ok: true, ...result});
   } catch (e) {
     console.error(e);
@@ -64,8 +64,6 @@ async function create (fontID, fontFile, charset, textureSize) {
 
   return {json, textures: textureData};
 }
-
-/* HELPERS */
 
 /** Parses multipart/form-data body, which Now 2.0 helpers do not. */
 function parseFormBody(req) {

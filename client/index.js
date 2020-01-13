@@ -81,23 +81,21 @@ new Vue({
       const zip = new JSZip();
       zip.file(fontFileName, JSON.stringify(this.json));
 
-      // TODO(donmccurdy): Support Data URI?
+      const pendingImages = json.pages.map((page) => {
+        return fetch(textures[page])
+          .then((response) => response.arrayBuffer())
+          .then((buffer) => {
+            zip.file(page, buffer);
+          });
+      });
 
-      // const pendingImages = json.pages.map((page) => {
-      //   return fetch(`${path}/${page}`)
-      //     .then((response) => response.arrayBuffer())
-      //     .then((buffer) => {
-      //       zip.file(page, buffer);
-      //     });
-      // });
-
-      // Promise.all(pendingImages).then(() => {
-      //   zip
-      //     .generateAsync({type:'blob'})
-      //     .then(function(content) {
-      //       saveAs(content, zipFileName);
-      //     });
-      // });
+      Promise.all(pendingImages).then(() => {
+        zip
+          .generateAsync({type:'blob'})
+          .then(function(content) {
+            saveAs(content, zipFileName);
+          });
+      });
     },
 
     resetFile: function () {
