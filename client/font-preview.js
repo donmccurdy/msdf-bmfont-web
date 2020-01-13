@@ -81,15 +81,14 @@ module.exports = {
       const textures = this.textures;
       const sampleText = this.sampleText;
 
-      const textureLoader = new THREE.TextureLoader();
-      const texture = textureLoader.load(textures[0]);
-
       if (json.pages.length > 1) {
         const msg = '[font-preview] Preview does not yet support multiple textures. Try reducing the charset or increasing texture size.';
         console.warn(msg);
         alert(msg);
       }
 
+      const textureLoader = new THREE.TextureLoader();
+      const texture = textureLoader.load(textures[json.pages[0]]);
       texture.minFilter = THREE.LinearMipMapLinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.generateMipmaps = true;
