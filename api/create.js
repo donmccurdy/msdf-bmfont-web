@@ -6,8 +6,18 @@ const util = require('util');
 const formidable = require('formidable');
 const generateBMFont = require('msdf-bmfont-xml');
 
-const DEFAULT_FONT = 'yahei';
 const APP_DIR = __dirname + '/..';
+const DEFAULT_FONT = 'yahei';
+const DEFAULT_FONT_PATH = `${APP_DIR}/fonts/${DEFAULT_FONT}.ttf`;
+
+/**
+ * TODO(donmccurdy): Can't write to disk in Now v2. So...
+ *
+ * To do:
+ * - [ ] Return Data URIs from serverless function.
+ * - [ ] Restore support for custom TTF fonts.
+ * - [ ] Patch msdf-bmfont-xml to support 'opentype.parse(buffer)'.
+ */
 
 module.exports = async (req, res) => {
   const form = await parseFormBody(req);
@@ -15,8 +25,6 @@ module.exports = async (req, res) => {
   const charset = String(form.fields.charset);
   const textureSize = Number(form.fields.textureSize);
 
-  // TODO(donmccurdy): Lost support for custom TTF fonts here.
-  // console.log(util.inspect(form.fields));
   // console.log(util.inspect(form.files));
 
   if (!fontID || !charset) {
@@ -26,7 +34,7 @@ module.exports = async (req, res) => {
 
   try {
     const result = await create(fontID, null /* fontFile */, charset, textureSize);
-    res.send({ok: true, json: result.json, path: result.path});
+    res.send({ok: true, ...result});
   } catch (e) {
     console.error(e);
     res.status(500).send({error: 'Sorry, something went wrong.'});
@@ -34,13 +42,8 @@ module.exports = async (req, res) => {
 };
 
 async function create (fontID, fontFile, charset, textureSize) {
-  const {taskID, taskDir} = await allocateDir();
-
-  if (!fontFile) {
-    await fs.copy(`${APP_DIR}/fonts/${DEFAULT_FONT}.ttf`, `${taskDir}/${fontID}.ttf`);
-  }
-
   const fontOptions = {
+    filename: fontID,
     outputType: 'json',
     charset: charset,
     textureSize: [textureSize, textureSize],
@@ -48,22 +51,18 @@ async function create (fontID, fontFile, charset, textureSize) {
   };
 
   const {json, textures} = await new Promise((resolve, reject) => {
-    generateBMFont(`${taskDir}/${fontID}.ttf`, fontOptions, async (e, textures, font) => {
-      e ? reject(e) : resolve({textures, json: font.data});
+    generateBMFont(DEFAULT_FONT_PATH, fontOptions, async (e, textures, font) => {
+      e ? reject(e) : resolve({textures, json: JSON.parse(font.data)});
     });
   });
 
-  await fs.writeFile(`${taskDir}/${fontID}-msdf.json`, json);
-  await fs.remove(`${taskDir}/${fontID}.ttf`);
-  await Promise.all(textures.map((texture, index) => {
-    const texturePath = path.basename(texture.filename);
-    return fs.writeFile(`${taskDir}/${texturePath}`, texture.texture);
-  }));
+  const textureData = {};
+  textures.forEach((texture) => {
+    const name = path.basename(texture.filename);
+    textureData[`${name}.png`] = 'data:image/png;base64,' + texture.texture.toString('base64');
+  });
 
-  // TODO(donmccurdy): Returning a very system-specific path here.
-  // Let's just bundle the textures into Data URIs, binary, or a ZIP,
-  // and send that back?
-  return {path: taskDir.replace('data/', ''), json};
+  return {json, textures: textureData};
 }
 
 /* HELPERS */
@@ -76,14 +75,4 @@ function parseFormBody(req) {
         err ? reject(err) : resolve({fields, files});
       });
   });
-}
-
-let nextTaskID = 1;
-
-/** Allocates an empty directory for a new task. */
-async function allocateDir () {
-  const taskID = nextTaskID++;
-  const taskDir = `${APP_DIR}/data/tasks/task-${taskID}`;
-  await fs.emptyDir(taskDir);
-  return {taskID, taskDir};
 }

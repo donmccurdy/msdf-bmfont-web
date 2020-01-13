@@ -17,7 +17,7 @@ new Vue({
     fontName: 'custom',
     fontFile: null,
     json: null,
-    path: null,
+    textures: null,
     pending: false,
     textureSize: 256
   },
@@ -54,7 +54,7 @@ new Vue({
         .then((result) => {
           if (result.error) throw result.error;
           this.json = result.json;
-          this.path = result.path;
+          this.textures = result.textures;
           console.log(result);
         })
         .catch((e) => {
@@ -71,9 +71,9 @@ new Vue({
       const fontFileName = this.fontFileName;
       const zipFileName = this.zipFileName;
       const json = this.json;
-      const path = this.path;
+      const textures = this.textures;
 
-      if (!json || !fontName || !path) {
+      if (!json || !fontName || !textures) {
         window.alert('Create bmfont before downloading files.');
         return;
       }
@@ -81,28 +81,30 @@ new Vue({
       const zip = new JSZip();
       zip.file(fontFileName, JSON.stringify(this.json));
 
-      const pendingImages = json.pages.map((page) => {
-        return fetch(`${path}/${page}`)
-          .then((response) => response.arrayBuffer())
-          .then((buffer) => {
-            zip.file(page, buffer);
-          });
-      });
+      // TODO(donmccurdy): Support Data URI?
 
-      Promise.all(pendingImages).then(() => {
-        zip
-          .generateAsync({type:'blob'})
-          .then(function(content) {
-            saveAs(content, zipFileName);
-          });
-      });
+      // const pendingImages = json.pages.map((page) => {
+      //   return fetch(`${path}/${page}`)
+      //     .then((response) => response.arrayBuffer())
+      //     .then((buffer) => {
+      //       zip.file(page, buffer);
+      //     });
+      // });
+
+      // Promise.all(pendingImages).then(() => {
+      //   zip
+      //     .generateAsync({type:'blob'})
+      //     .then(function(content) {
+      //       saveAs(content, zipFileName);
+      //     });
+      // });
     },
 
     resetFile: function () {
       this.$refs.fontFileInput.value = null;
       this.fontFile = null;
       this.json = null;
-      this.path = null;
+      this.textures = null;
     },
 
     onFileChange: function (e) {
@@ -119,7 +121,7 @@ new Vue({
 
     onFileNameChange: function () {
       this.json = null;
-      this.path = null;
+      this.textures = null;
     },
 
     sanitizeFileName: function () {

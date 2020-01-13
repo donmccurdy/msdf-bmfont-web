@@ -62,7 +62,7 @@
       <button v-on:click="download"
               v-bind:disabled="!json"
               class="button button-primary">Download</button>
-      <font-preview v-if="json" :json="json" :path="path" :sample-text="sampleText"></font-preview>
+      <font-preview v-if="json" :json="json" :textures="textures" :sample-text="sampleText"></font-preview>
       <p><i>Preview shows only first five characters of charset.</i></p>
     </section>
     <section>
@@ -87,19 +87,6 @@
   </footer>
 
   <script src="bundle.js"></script>
-  <script type="text/javascript">
-    var _gauges = _gauges || [];
-    (function() {
-      var t   = document.createElement('script');
-      t.type  = 'text/javascript';
-      t.async = true;
-      t.id    = 'gauges-tracker';
-      t.setAttribute('data-site-id', '5a87944f6eb5fb5561000055');
-      t.setAttribute('data-track-path', 'https://track.gaug.es/track.gif');
-      t.src = 'https://d2fuc4clr7gvcn.cloudfront.net/track.js';
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(t, s);
-    })();
-  </script>
+  <script src="https://analytics.donmccurdy.com/client.js"></script>
 </body>
 </html>

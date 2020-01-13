@@ -34,5 +34,7 @@ MSDF fonts may be generated with [Hiero](https://github.com/libgdx/libgdx/wiki/H
 
 ```
 npm install
-npm run dev
+npm install --global now
+
+now dev
 ```

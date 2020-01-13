@@ -4,10 +4,9 @@
   "description": "Web tool for creation of MSDF bitmap font spritesheets and JSON",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=production npm run build && node server.js",
     "build": "browserify -g envify client/index.js -o public/bundle.js",
     "clean": "rm -rf data/tasks/task-*",
-    "deploy": "now --docker && now alias"
+    "deploy": "now --prod"
   },
   "author": "Don McCurdy <dm@donmccurdy.com>",
   "license": "MIT",
@@ -26,14 +25,6 @@
     "vue": "^2.5.13"
   },
   "devDependencies": {},
-  "nodemonConfig": {
-    "ignore": [
-      "data/*",
-      "fonts/*",
-      "public/*",
-      "client/*"
-    ]
-  },
   "now": {
     "alias": "msdf-bmfont-v2.donmccurdy.com",
     "public": true
