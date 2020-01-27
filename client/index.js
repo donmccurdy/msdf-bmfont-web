@@ -4,6 +4,8 @@ const {saveAs} = require('file-saver');
 const FontPreview = require('./font-preview');
 const OverlaySpinner = require('./overlay-spinner');
 
+console.info(`[msdf-bmfont-web v${process.env.npm_package_version}]`);
+
 new Vue({
   el: '#app',
 
@@ -17,7 +19,7 @@ new Vue({
     fontName: 'custom',
     fontFile: null,
     json: null,
-    path: null,
+    textures: null,
     pending: false,
     textureSize: 256
   },
@@ -42,18 +44,19 @@ new Vue({
       const textureSize = this.textureSize;
 
       const body = new FormData();
+      body.append('name', fontName);
       body.append('charset', charset);
       body.append('fontFile', fontFile);
       body.append('textureSize', textureSize);
 
       this.pending = true;
 
-      fetch(`/_/font/${fontName}/`, {method: 'post', body: body})
+      fetch(`/api/create/`, {method: 'post', body: body})
         .then((response) => response.json())
         .then((result) => {
           if (result.error) throw result.error;
           this.json = result.json;
-          this.path = result.path;
+          this.textures = result.textures;
           console.log(result);
         })
         .catch((e) => {
@@ -70,9 +73,9 @@ new Vue({
       const fontFileName = this.fontFileName;
       const zipFileName = this.zipFileName;
       const json = this.json;
-      const path = this.path;
+      const textures = this.textures;
 
-      if (!json || !fontName || !path) {
+      if (!json || !fontName || !textures) {
         window.alert('Create bmfont before downloading files.');
         return;
       }
@@ -81,7 +84,7 @@ new Vue({
       zip.file(fontFileName, JSON.stringify(this.json));
 
       const pendingImages = json.pages.map((page) => {
-        return fetch(`${path}/${page}`)
+        return fetch(textures[page])
           .then((response) => response.arrayBuffer())
           .then((buffer) => {
             zip.file(page, buffer);
@@ -101,7 +104,7 @@ new Vue({
       this.$refs.fontFileInput.value = null;
       this.fontFile = null;
       this.json = null;
-      this.path = null;
+      this.textures = null;
     },
 
     onFileChange: function (e) {
@@ -118,7 +121,7 @@ new Vue({
 
     onFileNameChange: function () {
       this.json = null;
-      this.path = null;
+      this.textures = null;
     },
 
     sanitizeFileName: function () {

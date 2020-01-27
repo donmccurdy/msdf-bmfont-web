@@ -5,7 +5,7 @@ const createMSDFShader = require('three-bmfont-text/shaders/msdf');
 require('three/examples/js/controls/OrbitControls');
 
 module.exports = {
-  props: ['path', 'json', 'sampleText'],
+  props: ['json', 'textures', 'sampleText'],
   template: '<div class="font-preview"></div>',
 
   data: function () {
@@ -78,11 +78,8 @@ module.exports = {
   methods: {
     loadFont: function () {
       const json = this.json;
-      const path = this.path;
+      const textures = this.textures;
       const sampleText = this.sampleText;
-
-      const textureLoader = new THREE.TextureLoader();
-      const texture = textureLoader.load(path + '/' + json.pages[0]);
 
       if (json.pages.length > 1) {
         const msg = '[font-preview] Preview does not yet support multiple textures. Try reducing the charset or increasing texture size.';
@@ -90,6 +87,8 @@ module.exports = {
         alert(msg);
       }
 
+      const textureLoader = new THREE.TextureLoader();
+      const texture = textureLoader.load(textures[json.pages[0]]);
       texture.minFilter = THREE.LinearMipMapLinearFilter;
       texture.magFilter = THREE.LinearFilter;
       texture.generateMipmaps = true;
