@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify -g envify client/index.js -o public/bundle.js",
-    "deploy": "now --prod"
+    "deploy": "now --prod",
+    "postversion": "git push && git push --tags"
   },
   "author": "Don McCurdy <dm@donmccurdy.com>",
   "license": "MIT",
@@ -25,7 +26,6 @@
   },
   "devDependencies": {},
   "now": {
-    "alias": "msdf-bmfont-v2.donmccurdy.com",
     "public": true
   }
 }
