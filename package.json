@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify -g envify client/index.js -o public/bundle.js",
-    "clean": "rm -rf data/tasks/task-*",
     "deploy": "now --prod"
   },
   "author": "Don McCurdy <dm@donmccurdy.com>",

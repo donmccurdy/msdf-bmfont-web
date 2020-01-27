@@ -4,6 +4,8 @@ const {saveAs} = require('file-saver');
 const FontPreview = require('./font-preview');
 const OverlaySpinner = require('./overlay-spinner');
 
+console.info(`[msdf-bmfont-web v${process.env.npm_package_version}]`);
+
 new Vue({
   el: '#app',
 
