@@ -6,22 +6,23 @@ const util = require('util');
 const formidable = require('formidable');
 const generateBMFont = require('msdf-bmfont-xml');
 
-const APP_DIR = __dirname + '/..';
-const DEFAULT_FONT = 'yahei';
-const DEFAULT_FONT_PATH = `${APP_DIR}/fonts/${DEFAULT_FONT}.ttf`;
+const DEFAULT_FONT = fs.readFileSync(`${__dirname}/../fonts/yahei.ttf`);
 
 module.exports = async (req, res) => {
   const form = await parseFormBody(req);
-  const fontFile = null;
   const fontID = String(form.fields.name).replace(/[^a-zA-Z0-9-]/g, '');
   const charset = String(form.fields.charset);
   const textureSize = Number(form.fields.textureSize);
 
-  // console.log(util.inspect(form.files));
+  let fontFile = DEFAULT_FONT;
 
   if (!fontID || !charset) {
     res.status(400).send('<!DOCTYPE html>Missing or invalid font ID or charset.');
     return;
+  }
+
+  if (form.files && form.files.fontFile) {
+    fontFile = fs.readFileSync(form.files.fontFile.path);
   }
 
   try {
@@ -43,7 +44,7 @@ async function create (fontID, fontFile, charset, textureSize) {
   };
 
   const {json, textures} = await new Promise((resolve, reject) => {
-    generateBMFont(DEFAULT_FONT_PATH, fontOptions, async (e, textures, font) => {
+    generateBMFont(fontFile, fontOptions, async (e, textures, font) => {
       e ? reject(e) : resolve({textures, json: JSON.parse(font.data)});
     });
   });
