@@ -19,7 +19,7 @@
     "fs-extra": "^5.0.0",
     "jszip": "^3.1.5",
     "msdf-bmfont-xml": "^2.5.3",
-    "three": "^0.89.0",
+    "three": "^0.125.0",
     "three-bmfont-text": "^2.2.1",
     "uglify-es": "^3.3.10",
     "vue": "^2.5.13"
